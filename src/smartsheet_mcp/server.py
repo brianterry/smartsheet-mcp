@@ -18,7 +18,8 @@ mcp = FastMCP(
     instructions=(
         "Tools call the Smartsheet REST API (v2). "
         "Set SMARTSHEET_ACCESS_TOKEN in the server environment. "
-        "Optional SMARTSHEET_BASE_URL (default https://api.smartsheet.com/2.0)."
+        "Optional SMARTSHEET_BASE_URL (default https://api.smartsheet.com/2.0). "
+        "Sheets can be created in a workspace or folder, or deleted, when the token has permission."
     ),
     json_response=True,
 )
@@ -293,6 +294,68 @@ def smartsheet_get_folder(folder_id: str) -> dict[str, Any]:
 def smartsheet_get_workspace(workspace_id: str) -> dict[str, Any]:
     """Get a workspace including top-level folders and sheets (GET /workspaces/{workspaceId})."""
     return _run(lambda: get_client().get(f"/workspaces/{workspace_id}"))
+
+
+@mcp.tool()
+def smartsheet_create_sheet_in_workspace(
+    workspace_id: str,
+    name: str,
+    *,
+    columns: list[dict[str, Any]] | None = None,
+    from_template_id: str | None = None,
+    include: str | None = None,
+) -> dict[str, Any]:
+    """Create a sheet at the top level of a workspace (POST /workspaces/{workspaceId}/sheets).
+
+    Provide either from_template_id (copy from template; optional include= attachments,data,...) or
+    columns (Smartsheet column defs with exactly one primary). If both are omitted, creates a blank
+    grid with a single TEXT_NUMBER primary column titled Primary.
+    """
+    body = helpers.build_create_sheet_body(name, columns, from_template_id=from_template_id)
+    params: dict[str, Any] | None = None
+    if include and from_template_id:
+        params = {"include": include}
+
+    return _run(
+        lambda: get_client().post(
+            f"/workspaces/{workspace_id}/sheets",
+            json_body=body,
+            params=params,
+        ),
+    )
+
+
+@mcp.tool()
+def smartsheet_create_sheet_in_folder(
+    folder_id: str,
+    name: str,
+    *,
+    columns: list[dict[str, Any]] | None = None,
+    from_template_id: str | None = None,
+    include: str | None = None,
+) -> dict[str, Any]:
+    """Create a sheet inside a folder (POST /folders/{folderId}/sheets).
+
+    Same rules as smartsheet_create_sheet_in_workspace: from_template_id, columns, or default blank grid.
+    """
+    body = helpers.build_create_sheet_body(name, columns, from_template_id=from_template_id)
+    params: dict[str, Any] | None = None
+    if include and from_template_id:
+        params = {"include": include}
+
+    return _run(
+        lambda: get_client().post(
+            f"/folders/{folder_id}/sheets",
+            json_body=body,
+            params=params,
+        ),
+    )
+
+
+@mcp.tool()
+def smartsheet_delete_sheet(sheet_id: str) -> dict[str, Any]:
+    """Permanently delete a sheet (DELETE /sheets/{sheetId}). This cannot be undone."""
+    return _run(lambda: get_client().delete(f"/sheets/{sheet_id}"))
 
 
 @mcp.tool()

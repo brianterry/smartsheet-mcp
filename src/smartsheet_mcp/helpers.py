@@ -142,6 +142,23 @@ def fetch_all_sheet_rows(
     return out
 
 
+def build_create_sheet_body(
+    name: str,
+    columns: list[dict[str, Any]] | None,
+    *,
+    from_template_id: str | None,
+) -> dict[str, Any]:
+    """Build JSON body for POST /workspaces/{id}/sheets or POST /folders/{id}/sheets."""
+    if from_template_id:
+        return {"name": name, "fromId": int(from_template_id)}
+    if columns:
+        return {"name": name, "columns": columns}
+    return {
+        "name": name,
+        "columns": [{"title": "Primary", "type": "TEXT_NUMBER", "primary": True}],
+    }
+
+
 def group_cell_updates(changes: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Turn flat change list into PUT /rows row objects."""
     by_row: dict[int, list[dict[str, Any]]] = defaultdict(list)

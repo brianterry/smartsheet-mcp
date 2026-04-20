@@ -96,6 +96,12 @@ Tools return JSON. Smartsheet errors are usually surfaced as objects with an `er
 
 - `smartsheet_add_column`, `smartsheet_update_column`
 
+**Sheet lifecycle**
+
+- `smartsheet_create_sheet_in_workspace` — blank grid, custom `columns`, or copy from `from_template_id` (optional `include` when using a template)
+- `smartsheet_create_sheet_in_folder` — same, under a folder
+- `smartsheet_delete_sheet` — permanent delete (`DELETE /sheets/{sheetId}`)
+
 ## Project layout
 
 ```text
