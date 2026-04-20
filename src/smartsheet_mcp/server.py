@@ -275,8 +275,8 @@ def smartsheet_update_row_by_column_names(
 
 @mcp.tool()
 def smartsheet_search_sheets(query: str) -> dict[str, Any]:
-    """Search sheets the user can access (GET /search/sheets)."""
-    return _run(lambda: get_client().get("/search/sheets", params={"query": query}))
+    """Search across assets you can access (GET /search). Use scopes in the API for narrower results."""
+    return _run(lambda: get_client().get("/search", params={"query": query}))
 
 
 @mcp.tool()

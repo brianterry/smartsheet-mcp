@@ -38,13 +38,17 @@ The process exits immediately with a message on stderr if `SMARTSHEET_ACCESS_TOK
 
 ## Cursor (and other MCP clients)
 
-Add a stdio server that points at this repo’s interpreter and module, and pass the token via `env` (do not commit real tokens):
+Add a stdio server that points at **this clone’s** Python interpreter (the path must exist on your machine). Replace `COMMAND` with the output of `which python` from the activated venv, or use:
+
+`"<path-to-repo>/.venv/bin/python"` on macOS/Linux, or `".venv\\Scripts\\python.exe"` on Windows.
+
+**Do not** paste a placeholder path — if `command` is wrong you will see `spawn ... ENOENT` in MCP logs.
 
 ```json
 {
   "mcpServers": {
     "smartsheet": {
-      "command": "/absolute/path/to/smartsheet/.venv/bin/python",
+      "command": "/Users/YOU/repos/smartsheet-mcp/.venv/bin/python",
       "args": ["-m", "smartsheet_mcp"],
       "env": {
         "SMARTSHEET_ACCESS_TOKEN": "your-token-here"
@@ -59,6 +63,8 @@ Restart Cursor (or reload MCP) after editing configuration.
 ## Tools overview
 
 Tools return JSON. Smartsheet errors are usually surfaced as objects with an `error` field (and optional `smartsheet` payload) instead of crashing the server.
+
+`smartsheet_search_sheets` uses Smartsheet **`GET /search`** (global search). If you use an older checkout that still called `/search/sheets`, upgrade and restart the MCP server — that path returns 404.
 
 **Discovery and layout**
 
