@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "smartsheet-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "Local Model Context Protocol (MCP) server for the Smartsheet REST API"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -20,6 +20,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Office/Business :: Financial :: Spreadsheet",
 ]
 dependencies = [
@@ -27,11 +28,29 @@ dependencies = [
     "httpx>=0.27.0",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.8.0",
+]
+
 [project.scripts]
 smartsheet-mcp = "smartsheet_mcp.server:main"
 
 [project.urls]
 Documentation = "https://developers.smartsheet.com/api/smartsheet/introduction"
+Changelog = "https://github.com/brianterry/smartsheet-mcp/blob/main/CHANGELOG.md"
+Source = "https://github.com/brianterry/smartsheet-mcp"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.ruff]
+target-version = "py310"
+src = ["src"]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["smartsheet_mcp"]

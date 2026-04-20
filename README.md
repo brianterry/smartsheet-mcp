@@ -1,8 +1,12 @@
 # smartsheet-mcp
 
+[![CI](https://github.com/brianterry/smartsheet-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/brianterry/smartsheet-mcp/actions/workflows/ci.yml)
+
 A **local [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server** written in Python. It exposes Smartsheet [REST API v2](https://developers.smartsheet.com/api/smartsheet/introduction) operations as MCP tools so assistants in **Cursor**, Claude Desktop, and other MCP clients can read and update sheets with less boilerplate.
 
 Smartsheet is a trademark of Smartsheet Inc. This project is not affiliated with or endorsed by Smartsheet.
+
+**Releases:** see [CHANGELOG.md](./CHANGELOG.md). **Contributing:** see [CONTRIBUTING.md](./CONTRIBUTING.md). If your GitHub repo URL is not `brianterry/smartsheet-mcp`, update the badge above and `[project.urls]` in `pyproject.toml`.
 
 ## Requirements
 
@@ -96,6 +100,8 @@ Tools return JSON. Smartsheet errors are usually surfaced as objects with an `er
 
 ```text
 .
+├── CHANGELOG.md
+├── CONTRIBUTING.md
 ├── LICENSE
 ├── README.md
 ├── pyproject.toml
@@ -115,8 +121,9 @@ Installable package name: **`smartsheet-mcp`** (pip). Import name: **`smartsheet
 ## Development
 
 ```bash
-pip install -e .
-python -c "from smartsheet_mcp.server import mcp; print(mcp.name)"
+pip install -e ".[dev]"
+ruff check src && ruff format --check src
+python -c "import smartsheet_mcp; from smartsheet_mcp.server import mcp; print(mcp.name, smartsheet_mcp.__version__)"
 ```
 
 Optional MCP SDK helpers (from the `mcp` package), for example:
@@ -125,9 +132,7 @@ Optional MCP SDK helpers (from the `mcp` package), for example:
 mcp dev src/smartsheet_mcp/server.py
 ```
 
-## Contributing
-
-Issues and pull requests are welcome. Please keep tokens and `.env` out of git; use `.env.example` as a template only.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for pull requests, security notes, and CI expectations.
 
 ## License
 

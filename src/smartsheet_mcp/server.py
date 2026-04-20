@@ -10,8 +10,8 @@ from typing import Any
 import httpx
 from mcp.server.fastmcp import FastMCP
 
-from smartsheet_mcp.client import SmartsheetAPIError, get_client
 from smartsheet_mcp import helpers
+from smartsheet_mcp.client import SmartsheetAPIError, get_client
 
 mcp = FastMCP(
     "smartsheet",
@@ -172,6 +172,7 @@ def smartsheet_update_cells(sheet_id: str, changes: list[dict[str, Any]]) -> dic
 
     Each change is a dict with row_id, column_id, and value (camelCase rowId/columnId also accepted).
     """
+
     def _go() -> dict[str, Any]:
         rows_payload = helpers.group_cell_updates(changes)
         return get_client().put(f"/sheets/{sheet_id}/rows", json_body=rows_payload)
@@ -191,6 +192,7 @@ def smartsheet_resolve_columns(sheet_id: str, column_names: list[str]) -> dict[s
 
     Returns resolved, missing, and ambiguous (duplicate titles in the sheet).
     """
+
     def _go() -> dict[str, Any]:
         schema = get_client().get(
             f"/sheets/{sheet_id}",
@@ -218,6 +220,7 @@ def smartsheet_append_row_by_column_names(
 
     Unknown or ambiguous column titles return an error object without calling add-rows.
     """
+
     def _go() -> dict[str, Any]:
         if not values:
             return {"error": "values must contain at least one column name entry"}
@@ -248,6 +251,7 @@ def smartsheet_update_row_by_column_names(
     values: dict[str, Any],
 ) -> dict[str, Any]:
     """Update one row using column titles as keys in values (case-insensitive)."""
+
     def _go() -> dict[str, Any]:
         if not values:
             return {"error": "values must contain at least one column name entry"}
@@ -293,13 +297,19 @@ def smartsheet_get_workspace(workspace_id: str) -> dict[str, Any]:
 
 @mcp.tool()
 def smartsheet_add_rows(sheet_id: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
-    """Append or insert rows (POST /sheets/{sheetId}/rows). Each row follows Smartsheet Row JSON (cells, toBottom, etc.)."""
+    """Append or insert rows (POST /sheets/{sheetId}/rows).
+
+    Each row follows Smartsheet Row JSON (cells, toBottom, etc.).
+    """
     return _run(lambda: get_client().post(f"/sheets/{sheet_id}/rows", json_body=rows))
 
 
 @mcp.tool()
 def smartsheet_update_rows(sheet_id: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
-    """Update existing rows (PUT /sheets/{sheetId}/rows). Each row must include id and cells or other updatable fields."""
+    """Update existing rows (PUT /sheets/{sheetId}/rows).
+
+    Each row must include id and cells or other updatable fields.
+    """
     return _run(lambda: get_client().put(f"/sheets/{sheet_id}/rows", json_body=rows))
 
 
@@ -319,7 +329,10 @@ def smartsheet_get_row(sheet_id: str, row_id: str, include: str | None = None) -
 
 @mcp.tool()
 def smartsheet_add_column(sheet_id: str, column: dict[str, Any]) -> dict[str, Any]:
-    """Add one column (POST /sheets/{sheetId}/columns). Column must include title and type (PRIMARY, TEXT_NUMBER, etc.)."""
+    """Add one column (POST /sheets/{sheetId}/columns).
+
+    Column must include title and type (PRIMARY, TEXT_NUMBER, etc.).
+    """
     return _run(lambda: get_client().post(f"/sheets/{sheet_id}/columns", json_body=column))
 
 
