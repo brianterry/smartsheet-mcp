@@ -1,3 +1,4 @@
+# Python
 .venv/
 __pycache__/
 *.py[cod]
@@ -6,9 +7,13 @@ __pycache__/
 build/
 dist/
 *.egg
+
+# Secrets / local env
 .env
 .env.*
 !.env.example
+
+# Tooling / test
 .python-version
 .pytest_cache/
 .ruff_cache/
@@ -16,4 +21,12 @@ dist/
 htmlcov/
 .coverage
 coverage.xml
+
+# OS / editors
 .DS_Store
+.idea/
+*.swp
+*~
+
+# Logs
+*.log
